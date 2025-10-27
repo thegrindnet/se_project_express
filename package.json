@@ -1,0 +1,23 @@
+{
+  "name": "se_project_express-main",
+  "version": "1.0.0",
+  "description": "The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.",
+  "homepage": "https://github.com/thegrindnet/se_project_express#readme",
+  "bugs": {
+    "url": "https://github.com/thegrindnet/se_project_express/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thegrindnet/se_project_express.git"
+  },
+  "license": "ISC",
+  "author": "David Bonilla",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
