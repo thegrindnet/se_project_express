@@ -20,7 +20,10 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-console": ["warn", { allow: ["error"] }],
+    "no-console":
+      process.env.NODE_ENV === "production"
+        ? ["warn", { allow: ["warn", "error"] }]
+        : "off",
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
   },
 };
