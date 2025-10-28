@@ -1,7 +1,3 @@
-const _id = "";
-console.log("asdf");
-console.log(_id);
-
 module.exports = {
   env: {
     es2021: true,
