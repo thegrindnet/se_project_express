@@ -1,4 +1,4 @@
-// On Video 7: User Controllers
+// On Video 8: Error Handling Example
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
@@ -6,6 +6,7 @@ const mainRouter = require("./routes/index");
 const { PORT = 3001 } = process.env;
 const app = express();
 
+app.use(express.json());
 app.use("/", mainRouter);
 
 mongoose
