@@ -4,13 +4,16 @@ const ClothingItem = require("../models/clothingItem");
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
       res.status(201).send({ data: item });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send({ message: err.message });
+      if (err.name === "ValidationError") {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -21,7 +24,13 @@ const getItems = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send({ message: err.message });
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: err.message });
+      }
+      if (err.name === "CastError") {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -55,18 +64,34 @@ const updateItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(400).send({ message: "Invalid item ID" });
+  }
+
+  return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
-      res.status(200).send({ data: item });
+      if (!item) {
+        return res.status(404).send({ message: "Item not found" });
+      }
+      if (!item.owner || item.owner.toString() !== req.user._id.toString()) {
+        return res
+          .status(403)
+          .send({ message: "You do not have permission to delete this item" });
+      }
+      return ClothingItem.findByIdAndDelete(itemId).then(() => {
+        res.status(200).send({ data: item });
+      });
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        res.status(404).send({ message: "Item not found" });
-        return;
+      if (err.name === "CastError" || err.name === "ValidationError") {
+        return res.status(400).send({ message: "Invalid data" });
       }
-      res.status(500).send({ message: err.message });
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      }
+      return res.status(500).send({ message: "Error from deleteItem", err });
     });
 };
 
