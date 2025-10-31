@@ -64,7 +64,7 @@ se_project_express/
 ### 1) Prerequisites
 
 - Node.js (LTS ≥ 18)
-- MongoDB database (local or Atlas)
+- MongoDB database (local)
 
 ### 2) Clone & Install
 
