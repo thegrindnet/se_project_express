@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 
 const createItem = (req, res) => {
@@ -39,6 +40,14 @@ const updateItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(400).send({ message: "Invalid item data" });
+        return;
+      }
+      if (err.name === "DocumentNotFoundError") {
+        res.status(404).send({ message: "Item not found" });
+        return;
+      }
       res.status(500).send({ message: err.message });
     });
 };
@@ -53,6 +62,10 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        res.status(404).send({ message: "Item not found" });
+        return;
+      }
       res.status(500).send({ message: err.message });
     });
 };
