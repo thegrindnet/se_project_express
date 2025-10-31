@@ -83,19 +83,17 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
+    return res.status(INVALID_REQUEST).send({ message: err.message });
   }
 
   return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (!item) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       if (!item.owner || item.owner.toString() !== req.user._id.toString()) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "You do not have permission to delete this item" });
+        return res.status(FORBIDDEN).send({ message: err.message });
       }
       return ClothingItem.findByIdAndDelete(itemId).then(() => {
         res.status(200).send({ data: item });
@@ -104,14 +102,68 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError" || err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: "Invalid data" });
+        return res.status(INVALID_REQUEST).send({ message: err.message });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "Error from deleteItem", err });
+      return res.status(DEFAULT_ERROR).send({ message: err.message });
+    });
+};
+
+const addLike = (req, res) => {
+  const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(INVALID_REQUEST).send({ message: err.message });
+  }
+
+  return ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ data: item });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: err.message });
+      }
+      if (err.name === "CastError" || err.name === "ValidationError") {
+        return res.status(INVALID_REQUEST).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR).send({ message: err.message });
+    });
+};
+
+const removeLike = (req, res) => {
+  const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res.status(INVALID_REQUEST).send({ message: err.message });
+  }
+
+  return ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ data: item });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: err.message });
+      }
+      if (err.name === "CastError" || err.name === "ValidationError") {
+        return res.status(INVALID_REQUEST).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR).send({ message: err.message });
     });
 };
 
@@ -120,4 +172,6 @@ module.exports = {
   getItems,
   updateItem,
   deleteItem,
+  addLike,
+  removeLike,
 };
