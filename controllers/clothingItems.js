@@ -1,19 +1,37 @@
 const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 
+const {
+  DEFAULT_ERROR,
+  INVALID_REQUEST,
+  NOT_FOUND,
+  FORBIDDEN,
+  CREATED,
+} = require("../utils/errors");
+
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
+  if (!name || !weather || !imageUrl) {
+    return res
+      .status(400)
+      .send({ message: "name, weather, and imageUrl are required" });
+  }
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+  const owner = req.user?._id || req.body.owner;
+
+  return ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
-      res.status(201).send({ data: item });
+      res.status(CREATED).send(item);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      if (err.name === "CastError") {
+        return res.status(INVALID_REQUEST).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR).send({ message: err.message });
     });
 };
 
@@ -25,12 +43,12 @@ const getItems = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT_ERROR).send({ message: err.message });
     });
 };
 
@@ -50,14 +68,14 @@ const updateItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).send({ message: "Invalid item data" });
+        res.status(INVALID_REQUEST).send({ message: "Invalid item data" });
         return;
       }
       if (err.name === "DocumentNotFoundError") {
-        res.status(404).send({ message: "Item not found" });
+        res.status(NOT_FOUND).send({ message: "Item not found" });
         return;
       }
-      res.status(500).send({ message: err.message });
+      res.status(DEFAULT_ERROR).send({ message: err.message });
     });
 };
 
@@ -65,18 +83,18 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(400).send({ message: "Invalid item ID" });
+    return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
   }
 
   return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (!item) {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (!item.owner || item.owner.toString() !== req.user._id.toString()) {
         return res
-          .status(403)
+          .status(FORBIDDEN)
           .send({ message: "You do not have permission to delete this item" });
       }
       return ClothingItem.findByIdAndDelete(itemId).then(() => {
@@ -86,12 +104,14 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError" || err.name === "ValidationError") {
-        return res.status(400).send({ message: "Invalid data" });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid data" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
-      return res.status(500).send({ message: "Error from deleteItem", err });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "Error from deleteItem", err });
     });
 };
 
