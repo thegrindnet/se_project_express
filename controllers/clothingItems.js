@@ -26,10 +26,10 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
       if (err.name === "CastError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
       return res.status(DEFAULT_ERROR).send({ message: err.message });
     });
@@ -43,10 +43,10 @@ const getItems = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
       return res.status(DEFAULT_ERROR).send({ message: err.message });
     });
@@ -83,17 +83,19 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(INVALID_REQUEST).send({ message: err.message });
+    return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
   }
 
   return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (!item) {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (!item.owner || item.owner.toString() !== req.user._id.toString()) {
-        return res.status(FORBIDDEN).send({ message: err.message });
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "You do not have permission to delete this item" });
       }
       return ClothingItem.findByIdAndDelete(itemId).then(() => {
         res.status(200).send({ data: item });
@@ -102,7 +104,7 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError" || err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: err.message });
@@ -115,7 +117,7 @@ const addLike = (req, res) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(INVALID_REQUEST).send({ message: err.message });
+    return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
   }
 
   return ClothingItem.findByIdAndUpdate(
@@ -143,7 +145,9 @@ const removeLike = (req, res) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(INVALID_REQUEST).send({ message: err.message });
+    return res
+      .status(INVALID_REQUEST)
+      .send({ message: "You do not have permission to delete this item" });
   }
 
   return ClothingItem.findByIdAndUpdate(
