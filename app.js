@@ -15,18 +15,18 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-const routes = require("./routes");
-
-app.use(express.json());
-app.use("/", routes);
-app.use("/", mainRouter);
-
 app.use((req, res, next) => {
   req.user = {
     _id: "6901a25e9a1cb1de7d3dc99c",
   };
   next();
 });
+
+const routes = require("./routes");
+
+app.use(express.json());
+app.use("/", routes);
+app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
