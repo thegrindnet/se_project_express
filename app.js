@@ -1,4 +1,3 @@
-// On Video 8: Error Handling Example
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
