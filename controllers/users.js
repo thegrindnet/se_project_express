@@ -28,7 +28,7 @@ const createUser = (req, res) => {
     });
 };
 
-const getUserById = (req, res) => {
+const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
@@ -50,5 +50,5 @@ const getUserById = (req, res) => {
 module.exports = {
   getUsers,
   createUser,
-  getUserById,
+  getUser,
 };

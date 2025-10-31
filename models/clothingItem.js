@@ -10,13 +10,31 @@ const clothingItem = new mongoose.Schema({
     type: String,
     required: true,
   },
-  ImageURL: {
+  imageUrl: {
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isURL(v),
-      message: "Invalid URL format",
+      validator(value) {
+        return validator.isURL(value);
+      },
+      message: "You must enter a valid URL",
     },
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      default: [],
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

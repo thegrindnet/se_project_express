@@ -11,7 +11,6 @@ const {
 
 // Create
 router.post("/", createItem);
-
 // Read
 router.get("/", getItems);
 // Update
