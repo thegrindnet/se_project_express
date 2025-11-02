@@ -6,8 +6,9 @@ const {
   INVALID_REQUEST,
   NOT_FOUND,
   FORBIDDEN,
-  CREATED,
 } = require("../utils/errors");
+
+const { CREATED } = require("../utils/successStatuses");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
@@ -30,7 +31,9 @@ const createItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -47,7 +50,9 @@ const getItems = (req, res) => {
       if (err.name === "CastError") {
         return res.status(INVALID_REQUEST).send({ message: "Invalid item ID" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -79,9 +84,11 @@ const deleteItem = (req, res) => {
         return res.status(INVALID_REQUEST).send({ message: "Invalid data" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -104,12 +111,14 @@ const addLike = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError" || err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid data" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -132,12 +141,14 @@ const removeLike = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError" || err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res.status(INVALID_REQUEST).send({ message: "Invalid data" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

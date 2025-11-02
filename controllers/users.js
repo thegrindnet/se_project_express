@@ -3,8 +3,9 @@ const {
   DEFAULT_ERROR,
   INVALID_REQUEST,
   NOT_FOUND,
-  CREATED,
 } = require("../utils/errors");
+
+const { CREATED } = require("../utils/successStatuses");
 
 // GET /users
 const getUsers = (req, res) => {
