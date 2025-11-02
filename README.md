@@ -25,22 +25,18 @@ A lightweight REST API that powers the **se_project_react** frontend. This serve
 se_project_express/
 ├─ src/
 │  ├─ controllers/
-│  │  ├─ items.js
+│  │  ├─ clothingItems.js
 │  │  └─ users.js
 │  ├─ models/
-│  │  ├─ ClothingItem.js
-│  │  └─ User.js
+│  │  ├─ clothingItem.js
+│  │  └─ user.js
 │  ├─ routes/
-│  │  ├─ items.js
+│  │  ├─ clothinItems.js
 │  │  ├─ users.js
 │  │  └─ index.js
-│  ├─ middlewares/
-│  │  ├─ errors.js
-│  │  ├─ notFound.js
-│  │  └─ cors.js
 │  ├─ utils/
-│  │  ├─ constants.js
-│  │  └─ logger.js
+│  │  ├─ erros.js
+│  │  └─ successStatuses.js
 │  └─ app.js
 ├─ .env (not committed)
 ├─ package.json
