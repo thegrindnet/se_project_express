@@ -218,31 +218,6 @@ Make sure `package.json` includes helpful scripts like:
 
 ---
 
-## 🧰 Error Handling & Validation
-
-- Use a centralized error handler middleware to convert thrown/async errors into consistent JSON responses.
-- Return **400** for `ValidationError` or `CastError` from Mongoose; **404** when a resource isn’t found; **500** for unexpected errors.
-
-Example error middleware:
-
-```js
-// src/middlewares/errors.js
-module.exports = (err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  if (err.name === "ValidationError" || err.name === "CastError") {
-    return res.status(400).send({ message: err.message });
-  }
-  if (statusCode === 500) {
-    console.error(err);
-  }
-  return res
-    .status(statusCode)
-    .send({ message: statusCode === 500 ? "Internal Server Error" : message });
-};
-```
-
----
-
 **GitHub**
 
 - [Link to the project on GitHub](https://github.com/thegrindnet/se_project_express.git)
