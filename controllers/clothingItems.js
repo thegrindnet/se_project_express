@@ -8,13 +8,13 @@ const {
   FORBIDDEN,
 } = require("../utils/errors");
 
-const { CREATED } = require("../utils/successStatuses");
+const { OK, CREATED } = require("../utils/successStatuses");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   if (!name || !weather || !imageUrl) {
     return res
-      .status(400)
+      .status(INVALID_REQUEST)
       .send({ message: "name, weather, and imageUrl are required" });
   }
 
@@ -40,7 +40,7 @@ const createItem = (req, res) => {
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => {
-      res.status(200).send(items);
+      res.status(OK).send(items);
     })
     .catch((err) => {
       console.error(err);
@@ -75,7 +75,7 @@ const deleteItem = (req, res) => {
           .send({ message: "You do not have permission to delete this item" });
       }
       return ClothingItem.findByIdAndDelete(itemId).then(() => {
-        res.status(200).send({ data: item });
+        res.status(OK).send({ data: item });
       });
     })
     .catch((err) => {
@@ -106,7 +106,7 @@ const addLike = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      res.status(200).send({ data: item });
+      res.status(OK).send({ data: item });
     })
     .catch((err) => {
       console.error(err);
@@ -136,7 +136,7 @@ const removeLike = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      res.status(200).send({ data: item });
+      res.status(OK).send({ data: item });
     })
     .catch((err) => {
       console.error(err);

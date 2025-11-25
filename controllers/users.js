@@ -127,10 +127,11 @@ const login = (req, res) => {
 };
 
 const updateUser = (req, res) => {
+  const { _id } = req.user;
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
-    req.user._id,
+    _id,
     { name, avatar },
     { new: true, runValidators: true }
   )
