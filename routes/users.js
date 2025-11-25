@@ -6,6 +6,6 @@ router.use(auth);
 
 router.get("/me", getCurrentUser);
 
-router.get("/me", updateUser);
+router.patch("/me", updateUser);
 
 module.exports = router;
