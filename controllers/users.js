@@ -84,10 +84,12 @@ const getCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: err.message });
+        return res.status(NOT_FOUND).send({ message: "User not found" });
       }
       if (err.name === "CastError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res
+          .status(INVALID_REQUEST)
+          .send({ message: "Invalid data provided for user update" });
       }
       return res
         .status(DEFAULT_ERROR)
@@ -124,9 +126,36 @@ const login = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user.userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .orFail()
+    .then((user) => res.status(OK).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        return res
+          .status(INVALID_REQUEST)
+          .send({ message: "Invalid data provided for user update" });
+      }
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error occured on the server" });
+    });
+};
+
 module.exports = {
   getUsers,
   createUser,
   getCurrentUser,
   login,
+  updateUser,
 };

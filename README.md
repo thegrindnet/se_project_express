@@ -2,7 +2,7 @@
 
 <!-- https://github.com/Jonathan-Brandt/se_project_express -->
 
-<!-- https://github.com/Kevo6554/se_project_express -->
+<!-- Currently on Step 8-->
 
 # se_project_express — Node.js + Express.js Server
 
