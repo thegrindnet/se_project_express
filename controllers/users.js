@@ -31,7 +31,13 @@ const getUsers = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  User.findOne({ email })
+  if (!email) {
+    return res
+      .status(INVALID_REQUEST)
+      .send({ message: "The email field is required" });
+  }
+
+  return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
         return res
@@ -68,8 +74,8 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
   User.findById(userId)
     .orFail()
     .then((user) => {
@@ -91,6 +97,13 @@ const getUser = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(INVALID_REQUEST)
+      .send({ message: "The password and email fields are required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -114,6 +127,6 @@ const login = (req, res) => {
 module.exports = {
   getUsers,
   createUser,
-  getUser,
+  getCurrentUser,
   login,
 };
