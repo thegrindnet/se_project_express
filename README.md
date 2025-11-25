@@ -1,3 +1,9 @@
+<!-- https://github.com/Ceja95/se_project_express/blob/main/models/user.js -->
+
+<!-- https://github.com/Jonathan-Brandt/se_project_express -->
+
+<!-- https://github.com/Kevo6554/se_project_express -->
+
 # se_project_express — Node.js + Express.js Server
 
 ## 📌 Overview

@@ -1,11 +1,18 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
 const {
   DEFAULT_ERROR,
   INVALID_REQUEST,
   NOT_FOUND,
+  CONFLICT,
+  UNAUTHORIZED,
 } = require("../utils/errors");
 
-const { CREATED } = require("../utils/successStatuses");
+const { JWT_SECRET } = require("../utils/config");
+
+const { OK, CREATED } = require("../utils/successStatuses");
 
 // GET /users
 const getUsers = (req, res) => {
@@ -22,15 +29,26 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
+  const { name, avatar, email, password } = req.body;
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
-      res.status(CREATED).send(user);
+      res
+        .status(CREATED)
+        .send({ name: user.name, email: user.email, avatar: user.avatar });
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(INVALID_REQUEST).send({ message: err.message });
+        return res
+          .status(INVALID_REQUEST)
+          .send({ message: "User creation failed due to invalid input" });
+      }
+      if (err.code === 11000) {
+        return res
+          .status(CONFLICT)
+          .send({ message: "A user with this email already exists" });
       }
       return res
         .status(DEFAULT_ERROR)
@@ -43,7 +61,7 @@ const getUser = (req, res) => {
   User.findById(userId)
     .orFail()
     .then((user) => {
-      res.status(200).send(user);
+      res.status(OK).send(user);
     })
     .catch((err) => {
       console.error(err);
@@ -59,8 +77,31 @@ const getUser = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      return res.status(OK).send({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(UNAUTHORIZED)
+          .send({ message: "Incorrect email or password" });
+      }
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error occured on the server" });
+    });
+};
+
 module.exports = {
   getUsers,
   createUser,
   getUser,
+  login,
 };
