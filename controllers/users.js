@@ -30,13 +30,25 @@ const getUsers = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) => {
-      res
-        .status(CREATED)
-        .send({ name: user.name, email: user.email, avatar: user.avatar });
+
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        return res
+          .status(CONFLICT)
+          .send({ message: "A user with this email already exists" });
+      }
+
+      return bcrypt
+        .hash(password, 10)
+        .then((hash) => User.create({ name, avatar, email, password: hash }))
+        .then((user) =>
+          res.status(CREATED).send({
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+          })
+        );
     })
     .catch((err) => {
       console.error(err);
