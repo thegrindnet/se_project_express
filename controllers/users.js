@@ -15,20 +15,6 @@ const { JWT_SECRET } = require("../utils/config");
 
 const { OK, CREATED } = require("../utils/successStatuses");
 
-// GET /users
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => {
-      res.status(OK).send(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -161,7 +147,6 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,
