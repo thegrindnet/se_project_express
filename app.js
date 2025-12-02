@@ -19,15 +19,6 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: "6901a25e9a1cb1de7d3dc99c",
-//   };
-//   next();
-// });
-
-// const routes = require("./routes");
-
 app.use(express.json());
 app.use(cors());
 
