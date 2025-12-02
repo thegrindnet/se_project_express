@@ -8,6 +8,7 @@ const {
   NOT_FOUND,
   CONFLICT,
   UNAUTHORIZED,
+  DUPLICATE_ERROR,
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
@@ -18,13 +19,13 @@ const { OK, CREATED } = require("../utils/successStatuses");
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      res.status(200).send(users);
+      res.status(OK).send(users);
     })
     .catch((err) => {
       console.error(err);
       return res
         .status(DEFAULT_ERROR)
-        .send({ message: "An error occured on the server" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -35,6 +36,12 @@ const createUser = (req, res) => {
     return res
       .status(INVALID_REQUEST)
       .send({ message: "The email field is required" });
+  }
+
+  if (!password) {
+    return res
+      .status(INVALID_REQUEST)
+      .send({ message: "The password field is required" });
   }
 
   return User.findOne({ email })
@@ -63,14 +70,14 @@ const createUser = (req, res) => {
           .status(INVALID_REQUEST)
           .send({ message: "User creation failed due to invalid input" });
       }
-      if (err.code === 11000) {
+      if (err.code === DUPLICATE_ERROR) {
         return res
           .status(CONFLICT)
           .send({ message: "A user with this email already exists" });
       }
       return res
         .status(DEFAULT_ERROR)
-        .send({ message: "An error occured on the server" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -93,7 +100,7 @@ const getCurrentUser = (req, res) => {
       }
       return res
         .status(DEFAULT_ERROR)
-        .send({ message: "An error occured on the server" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -122,7 +129,7 @@ const login = (req, res) => {
       }
       return res
         .status(DEFAULT_ERROR)
-        .send({ message: "An error occured on the server" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
