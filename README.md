@@ -23,22 +23,23 @@ A lightweight REST API that powers the **se_project_react** frontend. This serve
 
 ```bash
 se_project_express/
-├─ src/
-│  ├─ controllers/
-│  │  ├─ clothingItems.js
-│  │  └─ users.js
-│  ├─ models/
-│  │  ├─ clothingItem.js
-│  │  └─ user.js
-│  ├─ routes/
-│  │  ├─ clothinItems.js
-│  │  ├─ users.js
-│  │  └─ index.js
-│  ├─ utils/
-│  │  ├─ erros.js
-│  │  └─ successStatuses.js
-│  └─ app.js
-├─ .env (not committed)
+├─ controllers/
+│  ├─ clothingItems.js
+│  └─ users.js
+├─ middlewares/
+│  └─ auth.js
+├─ models/
+│  ├─ clothingItem.js
+│  └─ user.js
+├─ routes/
+│  ├─ clothinItems.js
+│  ├─ index.js
+│  └─ users.js
+├─ utils/
+│  ├─ config.js
+│  ├─ errors.js
+│  └─ successStatuses.js
+├─ app.js
 ├─ package.json
 └─ README.md
 ```
