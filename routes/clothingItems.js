@@ -9,12 +9,12 @@ const {
   removeLike,
 } = require("../controllers/clothingItems");
 
+router.get("/", getItems);
 // CRUD
 router.use(auth);
 // Create
 router.post("/", createItem);
 // Read
-router.get("/", getItems);
 // Update
 
 // Delete
