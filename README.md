@@ -225,6 +225,12 @@ Make sure `package.json` includes helpful scripts like:
 
 ---
 
+**Video**
+
+- [Link to the video description of the project](https://www.loom.com/share/70c0c157516e476985950e8a36621a70)
+
+---
+
 ## 🛠️ Plan on Improving the Project
 
 - Add Authentication & Security – Implement user login with JWT tokens and password encryption using bcrypt.
