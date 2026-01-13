@@ -6,7 +6,7 @@ const app = express();
 
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
-const auth = require("./middlewares/auth");
+// const auth = require("./middlewares/auth");
 
 const { PORT = 3001 } = process.env;
 
@@ -25,7 +25,7 @@ app.use(cors());
 app.post("/signup", createUser);
 app.post("/signin", login);
 
-app.use(auth);
+// app.use(auth);
 
 app.use("/", mainRouter);
 
