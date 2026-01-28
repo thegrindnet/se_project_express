@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
+// const BadRequestError = require("../errors/badrequest-error");
+// const UnauthorizedError = require("../errors/unauthorized-error");
 
 const {
   DEFAULT_ERROR,
