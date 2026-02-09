@@ -44,7 +44,31 @@ const userInfoBodyValidation = celebrate({
   }),
 });
 
+const loginValidation = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email().messages({
+      "string.empty": "Email is required",
+      "string.email": "Email must be a valid email address",
+    }),
+    password: Joi.string().required().messages({
+      "string.empty": "Password is required",
+    }),
+  }),
+});
+
+const isValidation = celebrate({
+  params: Joi.object().keys({
+    itemId: Joi.string().required().hex().length(24).messages({
+      "string.empty": "ID is required",
+      "string.hex": "ID must be a hexadecimal string",
+      "string.length": "ID must be 24 characters long",
+    }),
+  }),
+});
+
 module.exports = {
   clothingItemBodyValidation,
   userInfoBodyValidation,
+  loginValidation,
+  isValidation,
 };
