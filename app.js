@@ -9,6 +9,7 @@ const app = express();
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 const { errorHandler } = require("./middlewares/errors");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 // const auth = require("./middlewares/auth");
 
 const { PORT = 3001 } = process.env;
@@ -23,6 +24,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use(requestLogger);
 app.use(cors());
 
 app.post("/signup", createUser);
@@ -32,6 +34,7 @@ app.post("/signin", login);
 
 app.use("/", mainRouter);
 
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
