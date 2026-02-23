@@ -227,7 +227,8 @@ Make sure `package.json` includes helpful scripts like:
 
 **Video**
 
-- [Link to the video description of the project](https://www.loom.com/share/70c0c157516e476985950e8a36621a70)
+- [First Video SE_Project_Express](https://www.loom.com/share/70c0c157516e476985950e8a36621a70)
+- [Second Video SE_Project_Express](https://www.loom.com/share/ac87f734740f4ae5b3106a5d58a44a93)
 
 ---
 
