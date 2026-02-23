@@ -227,13 +227,13 @@ Make sure `package.json` includes helpful scripts like:
 
 **Video**
 
-- [Link to the video description of the project at https://www.wtwr-db.soon.it](https://www.loom.com/share/70c0c157516e476985950e8a36621a70)
+- [Link to the video description of the project](https://www.loom.com/share/70c0c157516e476985950e8a36621a70)
 
 ---
 
 **Live Application**
 
-- [Visit the deployed Application](https://www.wtwr-db.soon.it)
+- [Visit the deployed Application at https://www.wtwr-db.soon.it](https://www.wtwr-db.soon.it)
 
 ---
 
