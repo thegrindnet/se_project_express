@@ -8,13 +8,9 @@ const { errors } = require("celebrate");
 const app = express();
 
 const mainRouter = require("./routes/index");
-const { createUser, login } = require("./controllers/users");
+
 const { errorHandler } = require("./middlewares/errors");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const {
-  userInfoBodyValidation,
-  clothingItemBodyValidation,
-} = require("./middlewares/validation");
 
 const { PORT = 3001 } = process.env;
 
@@ -36,11 +32,6 @@ app.get("/crash-test", () => {
     throw new Error("Server will crash now");
   }, 0);
 });
-
-app.post("/signup", userInfoBodyValidation, createUser);
-app.post("/signin", clothingItemBodyValidation, login);
-
-// app.use(auth);
 
 app.use("/", mainRouter);
 
